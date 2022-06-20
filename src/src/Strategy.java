@@ -11,8 +11,8 @@ import java.util.LinkedList;
  * @author cristhian
  */
 abstract class Strategy {
-	public abstract boolean verifyWord();
-	public abstract LinkedList<String> possibleWords();
+	public abstract boolean verifyWord(String word);
+	public abstract LinkedList<String> possibleWords(String word);
 	public abstract LinkedList<String> check(String word);
 	public abstract void loadDictionarie();
 }

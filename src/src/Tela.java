@@ -6,6 +6,7 @@ package src;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.text.Document;
@@ -19,6 +20,7 @@ public class Tela extends javax.swing.JFrame {
 	
 	private String word = "";
 	private SpellChecker verify = null;
+	LinkedList<String> possible = null;
 
 	/**
 	 * Creates new form Tela
@@ -123,7 +125,11 @@ public class Tela extends javax.swing.JFrame {
 	if (evt.getKeyChar()  != ' '){
 		this.word += evt.getKeyChar();
 	} else {
-		this.verify.check(this.word);
+		possible = new LinkedList<>();
+		
+		possible = this.verify.check(this.word);
+		
+		System.out.println(possible);
 
 		this.word = "";
 	}

@@ -17,34 +17,45 @@ import java.util.logging.Logger;
  *
  * @author cristhian
  */
-public class PortugueseDic extends Strategy {
+public final class PortugueseDic extends Strategy {
 
-	private LinkedList<Dictionary> dicPt = new LinkedList<>();
+	private final LinkedList<String> dicPt = new LinkedList<>();
 
 	public PortugueseDic() {
 		this.loadDictionarie();
 	}
 
 	@Override
-	public boolean verifyWord() {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+	public boolean verifyWord(String word) {
+		return dicPt.indexOf(word) != -1;
 	}
 
 	@Override
-	public LinkedList<String> possibleWords() {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+	public LinkedList<String> possibleWords(String word) {
+		LinkedList<String> possible = new LinkedList<>();
+		
+		int wordSize = word.length() / 2;
+		
+		for(String wordInDic : this.dicPt) {
+			if(wordInDic != null && wordInDic.indexOf(word.substring(0, wordSize)) != -1) {
+				possible.add(wordInDic);
+			}
+		}
+		
+		return possible;
 	}
 
 	@Override
 	public LinkedList<String> check(String word) {
-		System.out.println("Verificar palavra: " + word);
-
-		return new LinkedList<>();
+		if(verifyWord(word)){
+			return new LinkedList<>();
+		}
+		
+		return possibleWords(word);
 	}
 
 	@Override
 	public void loadDictionarie() {
-		Dictionary word = null;
 		String line = "";
 		int indexOfWord = 0;
 
@@ -54,31 +65,29 @@ public class PortugueseDic extends Strategy {
 		try {
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("src/pt.dic"), "UTF-16"));
 			
-			while ((line = bufferedReader.readLine()) != null) {
-				this.dicPt.add(null);
-			}
+//			while ((line = bufferedReader.readLine()) != null) {
+//				this.dicPt.add(null);
+//			}
 			
 			bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("src/pt.dic"), "UTF-16"));
 
 			while ((line = bufferedReader.readLine()) != null) {
-				word = new Dictionary();
+				this.dicPt.add(line);
 
-				word.setWord(line);
-
-				indexOfWord = this.hash(line) % this.dicPt.size();
-				
-				if(indexOfWord < 0){
-					indexOfWord = indexOfWord * -1;
-				}
-
-				try {
-					this.dicPt.get(indexOfWord);
-					qtd_col++;
-
-				} catch (Exception e) {
-					qtd_inst++;
-					this.dicPt.add(indexOfWord, word);
-				}
+//				indexOfWord = this.hash(line) % this.dicPt.size();
+//				
+//				if(indexOfWord < 0){
+//					indexOfWord = indexOfWord * -1;
+//				}
+//
+//				try {
+//					this.dicPt.get(indexOfWord);
+//					qtd_col++;
+//
+//				} catch (Exception e) {
+//					qtd_inst++;
+//					this.dicPt.add(indexOfWord, word);
+//				}
 			}
 
 		} catch (FileNotFoundException ex) {
