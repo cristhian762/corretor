@@ -16,12 +16,17 @@ import javax.swing.undo.UndoManager;
  * @author cristhian
  */
 public class Tela extends javax.swing.JFrame {
+	
+	private String word = "";
+	private SpellChecker verify = null;
 
 	/**
 	 * Creates new form Tela
 	 */
 	public Tela() {
 		initComponents();
+		
+		this.verify = new SpellChecker(new PortugueseDic());
 				
 		Document document = textArea.getDocument();
 		document.addUndoableEditListener(new UndoableEditListener() {
@@ -68,6 +73,11 @@ public class Tela extends javax.swing.JFrame {
 
         textArea.setColumns(20);
         textArea.setRows(5);
+        textArea.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                textAreaKeyPressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(textArea);
 
         after.setText("<");
@@ -108,6 +118,16 @@ public class Tela extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void textAreaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textAreaKeyPressed
+	if (evt.getKeyChar()  != ' '){
+		this.word += evt.getKeyChar();
+	} else {
+		this.verify.check(this.word);
+
+		this.word = "";
+	}
+    }//GEN-LAST:event_textAreaKeyPressed
 
 	/**
 	 * @param args the command line arguments
