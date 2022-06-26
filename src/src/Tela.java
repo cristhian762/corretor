@@ -70,6 +70,8 @@ public class Tela extends javax.swing.JFrame {
         after = new After(undo);
         before = new Before(undo);
         save = new Save(textArea);
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -102,7 +104,12 @@ public class Tela extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(before)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(save)))
+                        .addComponent(save))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -114,7 +121,11 @@ public class Tela extends javax.swing.JFrame {
                     .addComponent(before)
                     .addComponent(save))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
                 .addContainerGap())
         );
 
@@ -122,14 +133,22 @@ public class Tela extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void textAreaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textAreaKeyPressed
-	if (evt.getKeyChar()  != ' '){
+	jLabel1.setText("");
+	jLabel2.setText("");
+	
+	if ((int) evt.getKeyChar()  != 32 && (int) evt.getKeyChar() != 10 && (int) evt.getKeyChar() != 9)
 		this.word += evt.getKeyChar();
-	} else {
+	else if((int) evt.getKeyChar() == 8)
+		this.word = this.word.substring(0, this.word.length() - 2);
+	else {
 		possible = new LinkedList<>();
 		
-		possible = this.verify.check(this.word);
+		possible = this.verify.check(this.word.replace(",", "").replace(".", "").replace(";", ""));
 		
-		System.out.println(possible);
+		if(!possible.isEmpty()){
+			jLabel1.setText("Você quis dizer:");
+			jLabel2.setText(possible.toString().replace("[", "").replace("]", ""));
+		}
 
 		this.word = "";
 	}
@@ -173,6 +192,8 @@ public class Tela extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton after;
     private javax.swing.JButton before;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton save;
     private javax.swing.JTextArea textArea;

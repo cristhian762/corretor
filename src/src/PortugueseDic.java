@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,8 +19,12 @@ import java.util.logging.Logger;
  * @author cristhian
  */
 public final class PortugueseDic extends Strategy {
+	
+	private ArrayList listPrime = null;
+	
+	private final int TAM = 2069827;
 
-	private final LinkedList<String> dicPt = new LinkedList<>();
+	private final LinkedList<ArrayList> dic = new LinkedList<>();
 
 	public PortugueseDic() {
 		this.loadDictionarie();
@@ -27,86 +32,71 @@ public final class PortugueseDic extends Strategy {
 
 	@Override
 	public boolean verifyWord(String word) {
-		return dicPt.indexOf(word) != -1;
+		return !this.dic.get(hash(word)).isEmpty();
 	}
 
 	@Override
 	public LinkedList<String> possibleWords(String word) {
 		LinkedList<String> possible = new LinkedList<>();
-		
-		int wordSize = word.length() / 2;
-		
-		for(String wordInDic : this.dicPt) {
-			if(wordInDic != null && wordInDic.indexOf(word.substring(0, wordSize)) != -1) {
-				possible.add(wordInDic);
-			}
-		}
+
+		if(word.length() > 3)
+			for(ArrayList list : this.dic)
+				if(!list.isEmpty())
+					for(Object wordDic : list)
+						if(wordDic.toString().length() > 3 && word.substring(0, 3).equals(wordDic.toString().substring(0, 3)))
+							possible.add(wordDic.toString());
 		
 		return possible;
 	}
 
 	@Override
 	public LinkedList<String> check(String word) {
-		if(verifyWord(word)){
+		if (verifyWord(word)) 
 			return new LinkedList<>();
-		}
-		
+
 		return possibleWords(word);
 	}
 
 	@Override
 	public void loadDictionarie() {
+		Prime prime = new Prime();
+		
+		this.listPrime = prime.getPrime();
+		
 		String line = "";
-		int indexOfWord = 0;
-
-		int qtd_col = 0;
-		int qtd_inst = 0;
+		String source = "src/pt.dic";
 
 		try {
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("src/pt.dic"), "UTF-16"));
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(source), "UTF-16"));
+
+			for (int i = 0; i < this.TAM; i++) 
+				this.dic.add(new ArrayList());
+
+			bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(source), "UTF-16"));
+
+			while ((line = bufferedReader.readLine()) != null)
+				this.dic.get(hash(line)).add(line);
 			
-//			while ((line = bufferedReader.readLine()) != null) {
-//				this.dicPt.add(null);
-//			}
-			
-			bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("src/pt.dic"), "UTF-16"));
-
-			while ((line = bufferedReader.readLine()) != null) {
-				this.dicPt.add(line);
-
-//				indexOfWord = this.hash(line) % this.dicPt.size();
-//				
-//				if(indexOfWord < 0){
-//					indexOfWord = indexOfWord * -1;
-//				}
-//
-//				try {
-//					this.dicPt.get(indexOfWord);
-//					qtd_col++;
-//
-//				} catch (Exception e) {
-//					qtd_inst++;
-//					this.dicPt.add(indexOfWord, word);
-//				}
-			}
-
 		} catch (FileNotFoundException ex) {
 			Logger.getLogger(PortugueseDic.class.getName()).log(Level.SEVERE, null, ex);
 		} catch (IOException ex) {
 			Logger.getLogger(PortugueseDic.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		
-		System.out.println("Qtd coli: " + qtd_col);
-		System.out.println("Qtd inst: " + qtd_inst);
 	}
-	
+
 	public int hash(String str) {
-		int hash = 0;
-		
+		int h = 0, c;
+
 		for (int i = 0; i < str.length(); i++) {
-			hash = str.charAt(i) + ((hash << 5) - hash);
+			c = str.charAt(i);
+
+			h += c * (int) listPrime.get(c * i % 101);
 		}
 		
-		return hash;
+		
+		if(h < 0)
+			h = h * -1;
+		
+		return h;
 	}
 }
