@@ -14,12 +14,13 @@ import javax.swing.JButton;
 /**
  *
  * @author felipe
+ * @modifi cristhian
  */
 public class Save extends JButton implements IButtonCommand {
 
-	public javax.swing.JTextArea text;
+	public javax.swing.JTextPane text;
 
-	public Save(javax.swing.JTextArea text) {
+	public Save(javax.swing.JTextPane text) {
 		this.text = text;
 	}
 

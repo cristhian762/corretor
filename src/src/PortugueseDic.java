@@ -32,7 +32,14 @@ public final class PortugueseDic extends Strategy {
 
 	@Override
 	public boolean verifyWord(String word) {
-		return !this.dic.get(hash(word)).isEmpty();
+		if(this.dic.get(hash(word)).isEmpty())
+			return false;
+
+		for(Object wordDic : this.dic.get(hash(word)))
+			if(word.equals(wordDic.toString()))
+				return true;
+				
+		return false;
 	}
 
 	@Override
@@ -93,6 +100,7 @@ public final class PortugueseDic extends Strategy {
 			h += c * (int) listPrime.get(c * i % 101);
 		}
 		
+		h = h % 1000000;
 		
 		if(h < 0)
 			h = h * -1;

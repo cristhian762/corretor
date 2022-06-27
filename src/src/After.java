@@ -11,6 +11,7 @@ import javax.swing.undo.UndoManager;
 /**
  *
  * @author felipe
+ * @modifi cristhian
  */
 public class After extends JButton implements IButtonCommand {
 
